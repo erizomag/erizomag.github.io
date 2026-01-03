@@ -1,0 +1,41 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.7580, 42.6535],
+          [-73.7550, 42.6535],
+          [-73.7550, 42.6515],
+          [-73.7580, 42.6515],
+          [-73.7580, 42.6535]
+        ]]
+      },
+      "properties": {
+        "zone_code": "CBD",
+        "zone_name": "Central Business District",
+        "description": "Downtown core mixed-use"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.7585, 42.6540],
+          [-73.7565, 42.6540],
+          [-73.7565, 42.6520],
+          [-73.7585, 42.6520],
+          [-73.7585, 42.6540]
+        ]]
+      },
+      "properties": {
+        "zone_code": "R-2",
+        "zone_name": "Residential Medium Density",
+        "description": "Multifamily residential"
+      }
+    }
+  ]
+}

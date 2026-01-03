@@ -4,14 +4,17 @@ A web application that helps answer: "Is this parcel likely buildable for multif
 
 ## Overview
 
-Parcel Triage provides preliminary feasibility analysis for multifamily development projects. The MVP targets **Kingston, NY** as the pilot jurisdiction.
+Parcel Triage provides preliminary feasibility analysis for multifamily development projects. The MVP includes **Kingston, NY** (pilot) and **Albany, NY** (demo) jurisdictions.
 
 **Key Features:**
-- 🔍 Search parcels by address or parcel ID
-- 🚦 Green/Yellow/Red feasibility scoring
-- 📊 Transparent calculations (lot area, FAR, parking constraints)
-- 🗺️ Interactive map with zoning and floodplain overlays
-- 📏 Estimated unit range (min-max)
+- 🏙️ **Multi-Jurisdiction Support** - Switch between jurisdictions via dropdown
+- 🔍 **Parcel Search** - Search by address or parcel ID
+- 🚦 **Feasibility Scoring** - Green/Yellow/Red color-coded results
+- 📊 **Transparent Calculations** - Lot area, FAR, parking constraints
+- 🗺️ **Interactive Map** - Leaflet-based with zoning and floodplain overlays
+- 📏 **Unit Estimates** - Min-max unit range based on constraints
+- 🛠️ **Developer Tools** - Makefile, CI/CD, Docker support
+- ✅ **Data Validation** - Python script to validate GeoJSON files
 
 **Non-Goals (explicitly excluded):**
 - ❌ No legal determinations
@@ -34,50 +37,92 @@ Parcel Triage provides preliminary feasibility analysis for multifamily developm
 
 - Node.js 18+ and npm
 - Git
+- Make (optional, for convenience commands)
+- Python 3.8+ (optional, for data validation)
+- Docker + Docker Compose (optional, for containerized deployment)
 
 ### Installation
 
-1. **Clone the repository:**
-   ```bash
-   cd /path/to/erizomag.github.io/parcel-triage
-   ```
+#### Option 1: Using Makefile (Recommended)
 
-2. **Install dependencies:**
-   ```bash
-   npm install
-   ```
+```bash
+cd /path/to/erizomag.github.io/parcel-triage
 
-3. **Run development server:**
-   ```bash
-   npm run dev
-   ```
+# Install dependencies
+make install
 
-4. **Open your browser:**
-   ```
-   http://localhost:3000
-   ```
+# Start development server
+make dev
+
+# Open http://localhost:3000 in your browser
+```
+
+#### Option 2: Using npm directly
+
+```bash
+cd /path/to/erizomag.github.io/parcel-triage
+
+# Install dependencies
+npm install
+
+# Start development server
+npm run dev
+
+# Open http://localhost:3000 in your browser
+```
+
+#### Option 3: Using Docker
+
+```bash
+cd /path/to/erizomag.github.io/parcel-triage
+
+# Build and start all services
+docker-compose up --build
+
+# Open http://localhost:3000 in your browser
+# PostGIS available on localhost:5432
+# PgAdmin (dev profile) on localhost:5050
+```
 
 ### Running Tests
 
 ```bash
-# Run all tests
-npm test
+# Using Make
+make test              # Run all tests
+make test-watch        # Run tests in watch mode
+make lint              # Run ESLint
+make lint-fix          # Fix linting issues
 
-# Run tests in watch mode
-npm run test:watch
-
-# Run linting
-npm run lint
+# Using npm
+npm test               # Run all tests
+npm run test:watch     # Run tests in watch mode
+npm run lint           # Run ESLint
 ```
 
 ### Building for Production
 
 ```bash
-# Build optimized production bundle
+# Using Make
+make build
+
+# Using npm
 npm run build
 
 # Start production server
 npm start
+```
+
+### Data Validation
+
+```bash
+# Validate GeoJSON files for all jurisdictions
+make validate-data
+
+# Or validate a specific jurisdiction
+python3 scripts/validate-geojson.py data/kingston-ny
+
+# Validate and simplify geometries
+python3 scripts/validate-geojson.py data/kingston-ny --simplify --tolerance=0.0001
 ```
 
 ## Project Structure
@@ -183,26 +228,136 @@ Score: 🟢 GREEN (no constraints)
 
 ## Adding a New Jurisdiction
 
-To add support for another municipality:
+The system is designed for easy expansion to new municipalities. Follow these steps:
 
-1. **Create jurisdiction config** in `lib/config/jurisdictions.ts`:
-   ```typescript
-   export const newCityNY: JurisdictionConfig = {
-     id: 'newcity-ny',
-     name: 'New City',
-     state: 'NY',
-     // ... add zoning districts, data sources, etc.
-   };
-   ```
+### 1. Review the Template
 
-2. **Add GeoJSON data** in `data/newcity-ny/`:
-   - `parcels/parcels.geojson`
-   - `zoning/zoning.geojson`
-   - `floodplain/floodplain.geojson`
+```bash
+# View the jurisdiction configuration template
+cat jurisdictions/template.json
+```
 
-3. **Register jurisdiction** in the `jurisdictions` registry
+The template documents all required and optional fields.
 
-4. **Update frontend** to allow jurisdiction selection (currently hardcoded to Kingston)
+### 2. Prepare GeoJSON Data
+
+Collect three GeoJSON files:
+- **Parcels** - Must include `parcel_id`, `lot_area_sqft`, `zoning` properties
+- **Zoning Districts** - Must include `zone_code` property
+- **Floodplain** - Can be empty FeatureCollection if not applicable
+
+**Data Sources:**
+- County GIS departments
+- State open data portals
+- FEMA National Flood Hazard Layer (for floodplain)
+
+**Convert to GeoJSON if needed:**
+```bash
+# Example: Convert Shapefile to GeoJSON
+ogr2ogr -f GeoJSON -t_srs EPSG:4326 output.geojson input.shp
+```
+
+### 3. Create Directory Structure
+
+```bash
+mkdir -p data/your-city-st/{parcels,zoning,floodplain}
+```
+
+Place your GeoJSON files:
+```
+data/your-city-st/
+├── parcels/parcels.geojson
+├── zoning/zoning.geojson
+└── floodplain/floodplain.geojson
+```
+
+### 4. Validate Data
+
+```bash
+# Install Python dependencies
+pip install -r scripts/requirements.txt
+
+# Validate GeoJSON files
+python3 scripts/validate-geojson.py data/your-city-st
+
+# Optionally simplify geometries for performance
+python3 scripts/validate-geojson.py data/your-city-st --simplify --tolerance=0.0001
+```
+
+### 5. Create Jurisdiction Configuration
+
+Add to `lib/config/jurisdictions.ts`:
+
+```typescript
+export const yourCityST: JurisdictionConfig = {
+  id: 'your-city-st',
+  name: 'Your City',
+  state: 'ST',
+  data_sources: {
+    parcels: '/data/your-city-st/parcels/parcels.geojson',
+    zoning: '/data/your-city-st/zoning/zoning.geojson',
+    floodplain: '/data/your-city-st/floodplain/floodplain.geojson',
+  },
+  zoning_districts: {
+    'R-1': {
+      code: 'R-1',
+      name: 'Single-Family Residential',
+      multifamily_allowed: false,
+      min_lot_area_sqft: 5000,
+      max_lot_coverage: 0.30,
+      min_parking_per_unit: 2.0,
+      max_height_ft: 35,
+    },
+    // Add all zoning districts from your city...
+  },
+  default_assumptions: {
+    avg_unit_size_sqft: 900,
+    parking_reduction_factor: 0.8,
+  },
+};
+
+// Register in the jurisdictions object
+export const jurisdictions: Record<string, JurisdictionConfig> = {
+  'kingston-ny': kingstonNY,
+  'albany-ny': albanyNY,
+  'your-city-st': yourCityST,  // Add here
+};
+```
+
+### 6. Test the New Jurisdiction
+
+```bash
+# Run tests
+make test
+
+# Start dev server
+make dev
+
+# Test in browser:
+# 1. Select your jurisdiction from dropdown
+# 2. Search for a parcel
+# 3. Verify feasibility analysis works
+```
+
+### 7. Verify CI/CD
+
+The GitHub Actions workflow will automatically validate your GeoJSON files:
+
+```yaml
+# .github/workflows/ci.yml includes:
+python scripts/validate-geojson.py data/your-city-st
+```
+
+### Jurisdiction Configuration Checklist
+
+- [ ] GeoJSON files validated
+- [ ] All parcels have required properties
+- [ ] Zoning districts in GeoJSON match config
+- [ ] Coordinate system is WGS84 (EPSG:4326)
+- [ ] Config added to `jurisdictions.ts`
+- [ ] Jurisdiction appears in dropdown
+- [ ] Tests pass
+- [ ] Search and analysis work correctly
 
 ## Data Sources (Kingston, NY)
 

@@ -1,0 +1,65 @@
+name: CI
+
+on:
+  push:
+    branches: [ main, develop, claude/* ]
+  pull_request:
+    branches: [ main, develop ]
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: parcel-triage/package-lock.json
+
+    - name: Install dependencies
+      working-directory: ./parcel-triage
+      run: npm ci
+
+    - name: Run linter
+      working-directory: ./parcel-triage
+      run: npm run lint
+
+    - name: Run tests
+      working-directory: ./parcel-triage
+      run: npm test
+
+    - name: Build production bundle
+      working-directory: ./parcel-triage
+      run: npm run build
+
+  validate-data:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Setup Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install Python dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install geojson shapely
+
+    - name: Validate GeoJSON files
+      working-directory: ./parcel-triage
+      run: |
+        python scripts/validate-geojson.py data/kingston-ny
+        python scripts/validate-geojson.py data/albany-ny

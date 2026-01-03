@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import SearchForm from '@/components/SearchForm';
 import ParcelResults from '@/components/ParcelResults';
 import FeasibilityDisplay from '@/components/FeasibilityDisplay';
+import JurisdictionSelector from '@/components/JurisdictionSelector';
 import { ParcelFeature, FeasibilityResult } from '@/lib/types';
 
 // Dynamically import map to avoid SSR issues with Leaflet
@@ -17,15 +18,23 @@ const ParcelMap = dynamic(() => import('@/components/ParcelMap'), {
   ),
 });
 
-const JURISDICTION = 'kingston-ny';
-
 export default function Home() {
+  const [jurisdiction, setJurisdiction] = useState('kingston-ny');
   const [isSearching, setIsSearching] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [searchResults, setSearchResults] = useState<ParcelFeature[]>([]);
   const [selectedParcel, setSelectedParcel] = useState<ParcelFeature | null>(null);
   const [feasibilityResult, setFeasibilityResult] = useState<FeasibilityResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  const handleJurisdictionChange = (newJurisdiction: string) => {
+    setJurisdiction(newJurisdiction);
+    // Reset state when jurisdiction changes
+    setSearchResults([]);
+    setSelectedParcel(null);
+    setFeasibilityResult(null);
+    setError(null);
+  };
 
   const handleSearch = async (query: string, type: 'address' | 'parcel_id') => {
     setIsSearching(true);
@@ -36,7 +45,7 @@ export default function Home() {
 
     try {
       const params = new URLSearchParams({
-        jurisdiction: JURISDICTION,
+        jurisdiction,
         query,
         type,
       });
@@ -72,7 +81,7 @@ export default function Home() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          jurisdiction: JURISDICTION,
+          jurisdiction,
           parcel_id: parcel.properties.parcel_id,
           use_type: 'multifamily',
         }),
@@ -96,6 +105,11 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left Column - Search and Results */}
         <div className="lg:col-span-1 space-y-6">
+          <JurisdictionSelector
+            selectedJurisdiction={jurisdiction}
+            onSelect={handleJurisdictionChange}
+          />
+
           <SearchForm onSearch={handleSearch} isLoading={isSearching} />
 
           {error && (
@@ -128,7 +142,7 @@ export default function Home() {
             <ParcelMap
               selectedParcel={selectedParcel || undefined}
               feasibilityResult={feasibilityResult || undefined}
-              jurisdiction={JURISDICTION}
+              jurisdiction={jurisdiction}
             />
           </div>
         </div>

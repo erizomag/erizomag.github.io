@@ -1,0 +1,45 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.7562, 42.6526],
+          [-73.7556, 42.6526],
+          [-73.7556, 42.6521],
+          [-73.7562, 42.6521],
+          [-73.7562, 42.6526]
+        ]]
+      },
+      "properties": {
+        "parcel_id": "76.12-1-1",
+        "address": "100 State St, Albany, NY 12207",
+        "lot_area_sqft": 10000,
+        "zoning": "CBD",
+        "owner": "Downtown Development LLC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.7575, 42.6530],
+          [-73.7570, 42.6530],
+          [-73.7570, 42.6526],
+          [-73.7575, 42.6526],
+          [-73.7575, 42.6530]
+        ]]
+      },
+      "properties": {
+        "parcel_id": "76.12-1-2",
+        "address": "200 Madison Ave, Albany, NY 12202",
+        "lot_area_sqft": 6500,
+        "zoning": "R-2",
+        "owner": "Residential Properties Inc"
+      }
+    }
+  ]
+}

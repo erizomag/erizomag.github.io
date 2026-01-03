@@ -1,0 +1,148 @@
+{
+  "comment": "Jurisdiction Configuration Template for Parcel Triage",
+  "metadata": {
+    "name": "YOUR_JURISDICTION_NAME",
+    "comment": "How to use this template:",
+    "instructions": [
+      "1. Copy this template and rename to {jurisdiction-id}.json",
+      "2. Replace all placeholder values with actual jurisdiction data",
+      "3. Add the configuration to lib/config/jurisdictions.ts",
+      "4. Place GeoJSON data files in data/{jurisdiction-id}/",
+      "5. Validate data using: make validate-data"
+    ]
+  },
+  "required_fields": {
+    "id": {
+      "type": "string",
+      "description": "Unique identifier (lowercase, hyphenated, e.g., 'kingston-ny')",
+      "example": "your-city-st"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable jurisdiction name",
+      "example": "Your City"
+    },
+    "state": {
+      "type": "string",
+      "description": "Two-letter state code",
+      "example": "NY"
+    },
+    "data_sources": {
+      "parcels": {
+        "type": "string",
+        "description": "Path to parcels GeoJSON file",
+        "required_properties": ["parcel_id", "lot_area_sqft", "zoning"],
+        "optional_properties": ["address", "owner"],
+        "example": "/data/your-city-st/parcels/parcels.geojson"
+      },
+      "zoning": {
+        "type": "string",
+        "description": "Path to zoning districts GeoJSON file",
+        "required_properties": ["zone_code"],
+        "optional_properties": ["zone_name", "description"],
+        "example": "/data/your-city-st/zoning/zoning.geojson"
+      },
+      "floodplain": {
+        "type": "string",
+        "description": "Path to floodplain GeoJSON file (can be empty FeatureCollection)",
+        "required_properties": [],
+        "optional_properties": ["fld_zone", "fld_ar_id"],
+        "example": "/data/your-city-st/floodplain/floodplain.geojson"
+      }
+    },
+    "zoning_districts": {
+      "description": "Map of zoning district codes to their rules",
+      "type": "Record<string, ZoningDistrict>",
+      "example": {
+        "R-1": {
+          "code": "R-1",
+          "name": "Single-Family Residential",
+          "multifamily_allowed": false,
+          "min_lot_area_sqft": 5000,
+          "max_lot_coverage": 0.30,
+          "min_parking_per_unit": 2.0,
+          "max_height_ft": 35,
+          "max_far": null
+        },
+        "MF": {
+          "code": "MF",
+          "name": "Multifamily Residential",
+          "multifamily_allowed": true,
+          "min_lot_area_sqft": 10000,
+          "max_lot_coverage": 0.40,
+          "min_parking_per_unit": 1.5,
+          "max_height_ft": 45,
+          "max_far": 1.2
+        }
+      },
+      "field_descriptions": {
+        "code": "Zoning district code (must match zone_code in GeoJSON)",
+        "name": "Human-readable district name",
+        "multifamily_allowed": "REQUIRED: true if multifamily is permitted",
+        "min_lot_area_sqft": "Minimum lot area in square feet (optional)",
+        "max_lot_coverage": "Maximum lot coverage ratio 0-1 (optional, e.g., 0.40 = 40%)",
+        "min_parking_per_unit": "Minimum parking spaces per unit (optional)",
+        "max_height_ft": "Maximum building height in feet (optional)",
+        "max_far": "Maximum Floor Area Ratio (optional, e.g., 1.5)"
+      }
+    },
+    "default_assumptions": {
+      "avg_unit_size_sqft": {
+        "type": "number",
+        "description": "Average multifamily unit size in square feet",
+        "typical_range": "800-1000",
+        "example": 900
+      },
+      "parking_reduction_factor": {
+        "type": "number",
+        "description": "Factor for parking reductions (0-1, where 1.0 = no reduction)",
+        "notes": "Use 0.8-0.9 for transit-accessible areas, 1.0 for suburban",
+        "example": 0.85
+      }
+    }
+  },
+  "data_sources_documentation": {
+    "common_sources": {
+      "parcels": [
+        "County GIS departments",
+        "State GIS open data portals",
+        "County assessor/tax databases",
+        "ESRI open data portals"
+      ],
+      "zoning": [
+        "Municipal planning departments",
+        "Official zoning maps (may need digitization)",
+        "City/county GIS departments"
+      ],
+      "floodplain": [
+        "FEMA National Flood Hazard Layer (NFHL)",
+        "https://msc.fema.gov/portal/home",
+        "State emergency management agencies"
+      ]
+    },
+    "format_requirements": {
+      "coordinate_system": "WGS84 (EPSG:4326)",
+      "format": "GeoJSON",
+      "geometry_types": {
+        "parcels": "Polygon or MultiPolygon",
+        "zoning": "Polygon or MultiPolygon",
+        "floodplain": "Polygon or MultiPolygon"
+      }
+    },
+    "conversion_tools": [
+      "ogr2ogr (GDAL) for Shapefile to GeoJSON conversion",
+      "QGIS for manual digitization and conversion",
+      "geojson.io for small manual datasets"
+    ]
+  },
+  "validation_checklist": [
+    "All GeoJSON files are valid (use scripts/validate-geojson.py)",
+    "Coordinate system is WGS84 (EPSG:4326)",
+    "All zoning districts in GeoJSON have matching config entries",
+    "Required parcel properties are present",
+    "At least 3 test parcels exist for verification",
+    "Jurisdiction config added to lib/config/jurisdictions.ts",
+    "Jurisdiction appears in dropdown selector",
+    "Test search and analysis work correctly"
+  ]
+}

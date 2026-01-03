@@ -77,9 +77,53 @@ export const kingstonNY: JurisdictionConfig = {
   },
 };
 
+/**
+ * Albany, NY Jurisdiction Configuration (Dummy/Demo)
+ *
+ * This is a simplified demo jurisdiction to prove system portability.
+ * Uses toy data for demonstration purposes only.
+ */
+export const albanyNY: JurisdictionConfig = {
+  id: 'albany-ny',
+  name: 'Albany',
+  state: 'NY',
+  data_sources: {
+    parcels: '/data/albany-ny/parcels/parcels.geojson',
+    zoning: '/data/albany-ny/zoning/zoning.geojson',
+    floodplain: '/data/albany-ny/floodplain/floodplain.geojson',
+  },
+  zoning_districts: {
+    'R-2': {
+      code: 'R-2',
+      name: 'Residential Medium Density',
+      multifamily_allowed: true,
+      min_lot_area_sqft: 4000,
+      max_far: 1.2,
+      max_lot_coverage: 0.50,
+      min_parking_per_unit: 1.5,
+      max_height_ft: 40,
+    },
+    'CBD': {
+      code: 'CBD',
+      name: 'Central Business District',
+      multifamily_allowed: true,
+      min_lot_area_sqft: 2000,
+      max_far: 3.0,
+      max_lot_coverage: 0.80,
+      min_parking_per_unit: 0.75,
+      max_height_ft: 80,
+    },
+  },
+  default_assumptions: {
+    avg_unit_size_sqft: 850,
+    parking_reduction_factor: 0.85, // 15% reduction for urban core
+  },
+};
+
 // Registry of all jurisdictions
 export const jurisdictions: Record<string, JurisdictionConfig> = {
   'kingston-ny': kingstonNY,
+  'albany-ny': albanyNY,
 };
 
 export function getJurisdiction(id: string): JurisdictionConfig | null {
