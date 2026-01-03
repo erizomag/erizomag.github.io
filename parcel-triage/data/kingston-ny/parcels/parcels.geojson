@@ -1,0 +1,65 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9971, 41.9279],
+          [-73.9965, 41.9279],
+          [-73.9965, 41.9274],
+          [-73.9971, 41.9274],
+          [-73.9971, 41.9279]
+        ]]
+      },
+      "properties": {
+        "parcel_id": "48.28-1-1",
+        "address": "123 Broadway, Kingston, NY 12401",
+        "lot_area_sqft": 12000,
+        "zoning": "MU",
+        "owner": "Sample Owner LLC"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9980, 41.9285],
+          [-73.9975, 41.9285],
+          [-73.9975, 41.9281],
+          [-73.9980, 41.9281],
+          [-73.9980, 41.9285]
+        ]]
+      },
+      "properties": {
+        "parcel_id": "48.28-1-2",
+        "address": "456 Wall St, Kingston, NY 12401",
+        "lot_area_sqft": 8500,
+        "zoning": "R3",
+        "owner": "Another Owner"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9955, 41.9270],
+          [-73.9950, 41.9270],
+          [-73.9950, 41.9266],
+          [-73.9955, 41.9266],
+          [-73.9955, 41.9270]
+        ]]
+      },
+      "properties": {
+        "parcel_id": "48.28-1-3",
+        "address": "789 Delaware Ave, Kingston, NY 12401",
+        "lot_area_sqft": 15000,
+        "zoning": "R2",
+        "owner": "Third Owner"
+      }
+    }
+  ]
+}

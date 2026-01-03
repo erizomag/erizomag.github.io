@@ -1,0 +1,59 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9990, 41.9290],
+          [-73.9960, 41.9290],
+          [-73.9960, 41.9270],
+          [-73.9990, 41.9270],
+          [-73.9990, 41.9290]
+        ]]
+      },
+      "properties": {
+        "zone_code": "MU",
+        "zone_name": "Mixed Use",
+        "description": "Downtown mixed-use district"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9960, 41.9290],
+          [-73.9940, 41.9290],
+          [-73.9940, 41.9260],
+          [-73.9960, 41.9260],
+          [-73.9960, 41.9290]
+        ]]
+      },
+      "properties": {
+        "zone_code": "R3",
+        "zone_name": "Multifamily Residential",
+        "description": "Medium-density residential"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9940, 41.9280],
+          [-73.9920, 41.9280],
+          [-73.9920, 41.9250],
+          [-73.9940, 41.9250],
+          [-73.9940, 41.9280]
+        ]]
+      },
+      "properties": {
+        "zone_code": "R2",
+        "zone_name": "Two-Family Residential",
+        "description": "Low-density residential"
+      }
+    }
+  ]
+}

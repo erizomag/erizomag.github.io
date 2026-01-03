@@ -1,0 +1,24 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [[
+          [-73.9985, 41.9265],
+          [-73.9970, 41.9265],
+          [-73.9970, 41.9255],
+          [-73.9985, 41.9255],
+          [-73.9985, 41.9265]
+        ]]
+      },
+      "properties": {
+        "fld_zone": "AE",
+        "fld_ar_id": "36111C0123A",
+        "zone_subty": "FLOODWAY",
+        "static_bfe": 45.0
+      }
+    }
+  ]
+}
